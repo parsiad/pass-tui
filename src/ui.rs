@@ -4,7 +4,7 @@ use anyhow::Result;
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyModifiers};
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use ratatui::backend::CrosstermBackend;
-use ratatui::layout::{Constraint, Direction, Layout};
+use ratatui::layout::{Constraint, Direction, Layout, Rect};
 use ratatui::style::{Color, Modifier, Style};
 use ratatui::text::{Line, Span};
 use ratatui::widgets::{Block, Borders, Clear, List, ListItem, Paragraph, Wrap};
@@ -44,10 +44,17 @@ fn run(app: &mut App, terminal: &mut Terminal<CrosstermBackend<io::Stdout>>) -> 
         }
 
         if crossterm::event::poll(poll_timeout)? {
-            if let Event::Key(key) = event::read()? {
-                if handle_key(app, key)? {
+            match event::read()? {
+                Event::Key(key) => {
+                    if handle_key(app, key)? {
+                        needs_redraw = true;
+                    }
+                }
+                Event::Resize(width, height) => {
+                    terminal.resize(Rect::new(0, 0, width, height))?;
                     needs_redraw = true;
                 }
+                _ => {}
             }
         }
 
