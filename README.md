@@ -2,6 +2,8 @@
 
 TUI frontend for pass, the standard UNIX password manager.
 
+![](https://github.com/parsiad/pass-tui/blob/master/demo.gif?raw=true)
+
 ## Requirements
 
 * `pass` and `gpg` installed and available on `PATH`
